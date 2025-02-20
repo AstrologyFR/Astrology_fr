@@ -435,22 +435,23 @@ document.addEventListener("DOMContentLoaded", function () {
             const music1 = document.getElementById("bg-music-1");
             const music2 = document.getElementById("bg-music-2");
 
-            // Function to attempt playing the audio
-            function playAudio() {
-                music1.play().catch(err => console.log("Autoplay blocked:", err));
-                music2.play().catch(err => console.log("Autoplay blocked:", err));
+            async function playAudio() {
+                try {
+                    await music1.play();
+                    await music2.play();
+                    console.log("Autoplay successful!");
+                } catch (error) {
+                    console.log("Autoplay blocked. Waiting for user interaction.");
+                    document.addEventListener("click", enableAudio, { once: true });
+                }
             }
 
-            // Try to play on load
-            playAudio();
-
-            // If autoplay is blocked, wait for user interaction
             function enableAudio() {
-                playAudio();
-                document.removeEventListener("click", enableAudio);
+                music1.play().catch(err => console.log("Error playing music1:", err));
+                music2.play().catch(err => console.log("Error playing music2:", err));
             }
 
-            document.addEventListener("click", enableAudio);
+            playAudio();
         });
     </script>
 </body>
